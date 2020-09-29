@@ -42,14 +42,15 @@ public class Main {
                 System.out.println("Keep playing?");
                 playing = scanner.next().charAt(0);;
             } else if (playing == 's') {
-                Process process = Runtime.getRuntime().exec("kill mpv");
-                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                if (ytServices.checkIfRunning()) {
+                    Process process = Runtime.getRuntime().exec("kill mpv");
+                }
                 song = ytServices.searchSong();
                 songQueue = ytServices.addToQueue(songQueue, song);
+                songQueue = ytServices.playSong(songQueue);
                 while (ytServices.checkIfRunning()) {
 
                 }
-                songQueue = ytServices.playSong(songQueue);
             } else {
                 System.out.println("Oops! Invalid command!");
                 isRunning = false;

@@ -8,11 +8,6 @@ import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
-import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import playBot.Models.Song;
 
 import java.io.BufferedReader;
@@ -25,8 +20,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Queue;
 import java.util.LinkedList;
-
-import static com.sedmelluq.discord.lavaplayer.format.StandardAudioDataFormats.COMMON_PCM_S16_BE;
 
 public class YTServices {
 
@@ -92,13 +85,6 @@ public class YTServices {
         String vidURL = "https://www.youtube.com/watch?v=" + songQueue.poll().getVidURL();
         Process process = Runtime.getRuntime().exec("mpv " + vidURL +" --no-video");
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-//        AudioPlayerManager manager = new DefaultAudioPlayerManager();
-//        AudioSourceManagers.registerRemoteSources(manager);
-//        manager.getConfiguration().setOutputFormat(COMMON_PCM_S16_BE);
-//
-//        AudioPlayer player = manager.createPlayer();
-//
-//        System.out.println("It may take some time for the audio to load. Don't worry, the program is just buffering your music.");
 
         return songQueue;
     }

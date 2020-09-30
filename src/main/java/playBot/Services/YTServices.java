@@ -35,16 +35,14 @@ public class YTServices {
                 .build();
     }
 
-    public Song searchSong() throws GeneralSecurityException, IOException {
+    public Song searchSong(String query, int searchNum) throws GeneralSecurityException, IOException {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter title of song");
-        String query = scanner.nextLine();
         Song song = new Song();
         YouTube youtubeService = getService();
         YouTube.Search.List request = youtubeService.search()
                 .list(Collections.singletonList("snippet"));
         SearchListResponse searchResponse = request.setKey(DEVELOPER_KEY)
-                .setMaxResults(1L)
+                .setMaxResults((long) searchNum)
                 .setType(Collections.singletonList("video"))
                 .setVideoCategoryId("10")
                 .setQ(query)
@@ -109,5 +107,13 @@ public class YTServices {
         songQueue.add(song);
         System.out.println("Adding to queue");
         return songQueue;
+    }
+
+    public int getSearchNum (String cmnd) {
+        int searchNum = 1;
+        if (cmnd.length() > 1) {
+            searchNum = Integer.parseInt(String.valueOf(cmnd.charAt(1)));
+        }
+        return searchNum;
     }
 }

@@ -21,47 +21,94 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         YTServices ytServices = new YTServices();
-        Song song = ytServices.searchSong();
         Queue<Song> songQueue = new LinkedList<>();
+        Song song = new Song();
+
         boolean isRunning = true;
-        char playing = 'p';
+        int searchNum;
 
-        while (isRunning) {
-            if (playing == 'p') {
-                songQueue = ytServices.addToQueue(songQueue, song);
-                songQueue = ytServices.playSong(songQueue);
-                System.out.println("Keep playing?");
-                playing = scanner.next().charAt(0);
-            } else if (playing == 'q') {
-                song = ytServices.searchSong();
-                songQueue = ytServices.addToQueue(songQueue, song);
-                while (ytServices.checkIfRunning()) {
+        System.out.println("Welcome to playbot. Press h for the list of commands.");
+        String line = scanner.nextLine();
+        String[] cmnd = line.split(" ", 2);
 
-                }
-                songQueue = ytServices.playSong(songQueue);
-                System.out.println("Keep playing?");
-                playing = scanner.next().charAt(0);;
-            } else if (playing == 's') {
-                if (ytServices.checkIfRunning()) {
-                    Process process = Runtime.getRuntime().exec("kill mpv");
-                }
-                song = ytServices.searchSong();
-                songQueue = ytServices.addToQueue(songQueue, song);
-                songQueue = ytServices.playSong(songQueue);
-                while (ytServices.checkIfRunning()) {
+        if (cmnd[0].charAt(0) == 'p') {
+            char playing = 'p';
 
+            while (isRunning) {
+                if (playing == 'p') {
+                    searchNum = ytServices.getSearchNum(cmnd[0]);
+                    String query = cmnd[1];
+                    song = ytServices.searchSong(query, searchNum);
+                    songQueue = ytServices.addToQueue(songQueue, song);
+                    songQueue = ytServices.playSong(songQueue);
+                    System.out.println("Waiting for command...");
+                    line = scanner.nextLine();
+                    cmnd = line.split(" ", 2);
+                    playing = cmnd[0].charAt(0);
+                } else if (playing == 'a') {
+                    searchNum = ytServices.getSearchNum(cmnd[0]);
+                    String query = cmnd[1];
+                    song = ytServices.searchSong(query, searchNum);
+                    songQueue = ytServices.addToQueue(songQueue, song);
+                    while (ytServices.checkIfRunning()) {
+
+                    }
+                    songQueue = ytServices.playSong(songQueue);
+                    System.out.println("Waiting for command...");
+                    line = scanner.nextLine();
+                    cmnd = line.split(" ", 2);
+                    playing = cmnd[0].charAt(0);;
+                } else if (playing == 's') {
+                    if (ytServices.checkIfRunning()) {
+                        Process process = Runtime.getRuntime().exec("kill mpv");
+                    }
+                    searchNum = ytServices.getSearchNum(cmnd[0]);
+                    String query = cmnd[1];
+                    song = ytServices.searchSong(query, searchNum);
+                    songQueue = ytServices.addToQueue(songQueue, song);
+                    songQueue = ytServices.playSong(songQueue);
+                    while (ytServices.checkIfRunning()) {
+
+                    }
+                    System.out.println("Waiting for command...");
+                    line = scanner.nextLine();
+                    cmnd = line.split(" ", 2);
+                    playing = cmnd[0].charAt(0);
+                } else {
+                    System.out.println("Oops! Invalid command!");
+                    isRunning = false;
                 }
-            } else {
-                System.out.println("Oops! Invalid command!");
-                isRunning = false;
             }
+        } else if (cmnd[0].charAt(0) == 'l') {
+            System.out.println("Add songs. Enter s to stop.");
+            line = scanner.nextLine();
+            cmnd = line.split(" ", 2);
+            System.out.println(cmnd[0]);
+            System.out.println(cmnd[1]);
+            char add = cmnd[0].charAt(0);
+
+            while (add == 'a') {
+                String query = cmnd[1];
+                searchNum = ytServices.getSearchNum(cmnd[0]);
+                song = ytServices.searchSong(query, searchNum);
+                songQueue = ytServices.addToQueue(songQueue, song);
+                System.out.println("Waiting for command...");
+                line = scanner.nextLine();
+                cmnd = line.split(" ", 2);
+                add = cmnd[0].charAt(0);
+            }
+
+            while (!songQueue.isEmpty()) {
+                songQueue = ytServices.playSong(songQueue);
+                while (ytServices.checkIfRunning()) {
+
+                }
+            }
+        } else if (cmnd[0].charAt(0) == 'x') {
+            System.exit(0);
         }
+
+
+        main(null);
     }
-
-
-
-
-
-
-
 }

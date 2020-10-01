@@ -81,7 +81,7 @@ public class YTServices {
     public Queue<Song> playSong(Queue<Song> songQueue) throws IOException {
         Scanner scanner = new Scanner(System.in);
         String vidURL = "https://www.youtube.com/watch?v=" + songQueue.poll().getVidURL();
-        Process process = Runtime.getRuntime().exec("mpv " + vidURL +" --no-video");
+        Process process = Runtime.getRuntime().exec("cvlc  --no-video " + vidURL);
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
         return songQueue;
@@ -91,7 +91,7 @@ public class YTServices {
         String line;
         boolean isRunning = false;
         try {
-            Process p = Runtime.getRuntime().exec("pidof mpv");
+            Process p = Runtime.getRuntime().exec("pidof vlc");
             BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
             if ((line = input.readLine()) != null) {
 //                System.out.println(line);
@@ -115,5 +115,9 @@ public class YTServices {
             searchNum = Integer.parseInt(String.valueOf(cmnd.charAt(1)));
         }
         return searchNum;
+    }
+
+    public void pauseSong() throws IOException {
+        Process p = Runtime.getRuntime().exec("dbus-send --type=method_call --print-reply --dest=org.mpris.MediaPlayer2.vlc /org/mpris/MediaPlayer2   org.mpris.MediaPlayer2.Player.PlayPause");
     }
 }
